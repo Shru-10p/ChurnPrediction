@@ -16,7 +16,7 @@ def load_and_preprocess_data():
 
     le = LabelEncoder()
     for column in df.columns:
-        if df[column].dtype == np.number:
+        if np.issubdtype(df[column].dtype, np.number):
             continue
         df[column] = le.fit_transform(df[column])
 
@@ -35,9 +35,9 @@ def train_modelRandomForest(X, y):
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
-        print('Model accuracy: {}'.format(accuracy))
-        print('Classification Report:')
-        print(classification_report(y_test, y_pred))
+        # print('Model accuracy: {}'.format(accuracy))
+        # print('Classification Report:')
+        # print(classification_report(y_test, y_pred))
 
     joblib.dump(model, 'random_forest_model.pkl')
 
@@ -51,15 +51,14 @@ train_modelRandomForest(X, y)
 
 model = joblib.load('random_forest_model.pkl')
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('index.html')
-
-@app.route('/predict', methods=['POST'])
-def predict():
+    if request.method=="GET":
+        return render_template('index.html')
     features = [float(x) for x in request.form.values()]
     prediction = model.predict([features])
-    return render_template('index.html', prediction_text='Churn Prediction: {}'.format(prediction[0]))
+    print(prediction)
+    return render_template('index.html', prediction=prediction[0])
 
 if __name__ == "__main__":
     app.run(debug=True)
