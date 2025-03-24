@@ -35,7 +35,7 @@ def train_modelRandomForest(X, y):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 
-    return model
+    return model, accuracy
 
 def train_modelLogisticRegression(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -45,7 +45,7 @@ def train_modelLogisticRegression(X, y):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 
-    return model
+    return model, accuracy
 
 def train_modelKNN(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -55,7 +55,7 @@ def train_modelKNN(X, y):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 
-    return model
+    return model, accuracy
 
 app = Flask(__name__)
 
@@ -71,10 +71,19 @@ def home():
     if request.method=="GET":
         return render_template('index.html')
     features = [float(x) for x in request.form.values()]
-    prediction_rf = model_rf.predict([features])
-    prediction_lr = model_lr.predict([features])
-    prediction_knn = model_knn.predict([features])
-    return render_template('index.html', prediction_rf=prediction_rf, prediction_lr=prediction_lr, prediction_knn=prediction_knn)
+    prediction_rf = model_rf[0].predict([features])
+    prediction_lr = model_lr[0].predict([features])
+    prediction_knn = model_knn[0].predict([features])
+    total_acc = model_knn[1] + model_lr[1] + model_rf[1]
+    avg_pred = (model_knn[1]*prediction_rf+model_lr[1]*prediction_lr+model_rf[1]*prediction_knn)/(total_acc)
+    return render_template('index.html',
+                            prediction_rf=prediction_rf[0],
+                            acc_rf = model_rf[1],
+                            prediction_lr=prediction_lr[0], 
+                            acc_lr = model_lr[1],
+                            prediction_knn=prediction_knn[0], 
+                            acc_knn = model_knn[1],
+                            avg_pred = round(avg_pred[0]))
 
 if __name__ == "__main__":
     app.run(debug=False)

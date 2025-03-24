@@ -110,8 +110,29 @@
       <button type="submit" class="btn btn-primary mt-4">Predict</button>
     </form>
     <div class="alert alert-success mt-4" role="alert">
-        <h4 class="alert-heading">Prediction Result:</h4>
-        <p>{{ prediction }}</p>
+        <h4 class="alert-heading">Random Forest Prediction Result:</h4>
+        <p>{{ prediction_rf }}
+          <br>
+          Accuracy : {{acc_rf}}
+        </p>
+    </div>
+    <div class="alert alert-success mt-4" role="alert">
+        <h4 class="alert-heading">KNN Prediction Result:</h4>
+        <p>{{ prediction_knn }}
+          <br>
+          Accuracy : {{acc_knn}}
+        </p>
+    </div>
+    <div class="alert alert-success mt-4" role="alert">
+      <h4 class="alert-heading">Logistic Regression Prediction Result:</h4>
+      <p>{{ prediction_lr }}
+        <br>
+        Accuracy : {{acc_lr}}
+      </p>
+    </div>
+    <div class="alert alert-success mt-4" role="alert">
+      <h4 class="alert-heading">Average Prediction Result:</h4>
+      <p>{{ avg_pred }}</p>
     </div>
   </div>
 </body>
